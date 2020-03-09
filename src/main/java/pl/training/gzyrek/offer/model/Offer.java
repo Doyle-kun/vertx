@@ -11,5 +11,4 @@ public class Offer {
     private Long id;
     private String name;
     private BigDecimal price;
-
 }

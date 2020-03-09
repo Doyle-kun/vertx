@@ -1,9 +1,11 @@
 package pl.training.gzyrek.offer;
 
+import io.vertx.core.Vertx;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.training.gzyrek.offer.model.Offer;
+import pl.training.gzyrek.offer.model.OfferDto;
 import pl.training.gzyrek.offer.service.OfferService;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -22,12 +24,12 @@ public class OfferVerticle extends AbstractVerticle {
     private OfferService offerService = new OfferService();
     private static Logger logger = LoggerFactory.getLogger(OfferVerticle.class);
 
-    //  public static void main(String[] args) {
-//    Vertx vertx = Vertx.vertx();
-//
-//    vertx.deployVerticle(new OfferVerticle());
-//    //vertx.deployVerticle(MyVerticle.class);
-//  }
+      public static void main(String[] args) {
+    Vertx vertx = Vertx.vertx();
+
+    vertx.deployVerticle(new OfferVerticle());
+    //vertx.deployVerticle(MyVerticle.class);
+  }
     @Override
     public void start(Future<Void> fut) {
         Router router = Router.router(vertx);
@@ -61,7 +63,7 @@ public class OfferVerticle extends AbstractVerticle {
                         List<Offer> offers = offerService.prepareOffers(response.bodyAsString());
                         routingContext.response()
                                 .putHeader("content-type", "application/json; charset=utf-8")
-                                .end(Json.encodePrettily(offers));
+                                .end(Json.encodePrettily(new OfferDto(offers)));
                     } else {
                         logger.error("Something went wrong " + ar.cause().getMessage());
                     }

@@ -13,25 +13,24 @@ import java.util.List;
 public class OfferService {
 
 
-    public List<Offer> prepareOffers(String input){
+    public List<Offer> prepareOffers(String input) {
         List<Offer> offers = new ArrayList<>();
         Document doc = Jsoup.parse(input);
         Element offersTable = doc.getElementById("offers_table");
         Elements tableBody = offersTable.getElementsByAttribute("data-id");
-        for (Element element: tableBody) {
-            Offer offer = Offer.builder().id
-            offer.setId(Long.valueOf(element.attributes().get("data-id")));
+        tableBody.forEach(element -> {
             Elements details = element.getElementsByTag("strong");
-            offer.setName(details.get(0).ownText());
-            offer.setPrice(new BigDecimal(details.get(1)
-                    .ownText()
-                    .trim()
-                    .replace("zł", "")
-                    .replace(" ", "")
-                    .replace(",",".")
-            ));
-            offers.add(offer);
-        }
+            offers.add(Offer.builder()
+                    .id(Long.valueOf(element.attributes().get("data-id")))
+                    .name(details.get(0).ownText())
+                    .price(new BigDecimal(details.get(1)
+                            .ownText()
+                            .trim()
+                            .replace("zł", "")
+                            .replace(" ", "")
+                            .replace(",", ".")
+                    )).build());
+        });
         return offers;
     }
 }
