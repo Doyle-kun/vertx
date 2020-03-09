@@ -28,16 +28,19 @@ public class OfferService {
             logger.debug("Got table content: " + tableBody);
             tableBody.forEach(element -> {
                 Elements details = element.getElementsByTag("strong");
-                offers.add(Offer.builder()
+                Offer.OfferBuilder offer = Offer.builder()
                         .id(Long.valueOf(element.attributes().get("data-id")))
-                        .name(details.get(0).ownText())
-                        .price(new BigDecimal(details.get(1)
-                                .ownText()
-                                .trim()
-                                .replace("zł", "")
-                                .replace(" ", "")
-                                .replace(",", ".")
-                        )).build());
+                        .name(details.get(0).ownText());
+                        if (details.size()>1) {
+                        offer.price(new BigDecimal(details.get(1)
+                                    .ownText()
+                                    .trim()
+                                    .replace("zł", "")
+                                    .replace(" ", "")
+                                    .replace(",", ".")
+                            ));
+                        }
+                offers.add(offer.build());
             });
         }
         logger.debug("Produced list of offers: " + offers.toString());
